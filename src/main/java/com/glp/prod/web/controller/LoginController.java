@@ -67,4 +67,9 @@ public class LoginController {
     public String nopermission(){
         return "no permission";
     }
+
+    @RequestMapping("/page1")
+    public String page1(){
+        return  "page1";
+    }
 }
