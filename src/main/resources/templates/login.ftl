@@ -1,20 +1,29 @@
-<html lang="zh">
+<!DOCTYPE html>
+<html>
 <head>
-    <title>loginPage</title>
-
+    <meta charset="utf-8">
+    <title>iview example</title>
+    <link rel="stylesheet" type="text/css" href="http://unpkg.com/iview/dist/styles/iview.css">
+    <script type="text/javascript" src="http://vuejs.org/js/vue.min.js"></script>
+    <script type="text/javascript" src="http://unpkg.com/iview/dist/iview.min.js"></script>
 </head>
 <body>
-    <h1>here is login page</h1>
-    <div>
-        <form action="/login" method="post">
-            <div>
-                <label>username:</label><input type="text" name="username" placeholder="your name" />
-            </div>
-            <div>
-                <label>password:</label><input type="password" name="password" placeholder="******"/>
-            </div>
-            <input type="submit" name="登录"/>
-        </form>
-    </div>
+<div id="app">
+    <i-button @click="show">Click me!</i-button>
+    <Modal v-model="visible" title="Welcome">Welcome to iView</Modal>
+</div>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            visible: false
+        },
+        methods: {
+            show: function () {
+                this.visible = true;
+            }
+        }
+    })
+</script>
 </body>
 </html>
