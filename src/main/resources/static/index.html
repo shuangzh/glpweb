@@ -19,11 +19,11 @@
 			<div>
 				<el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
 					<template v-for="menu in menudata.menus">
-						<el-submenu v-if="menu.issub" :index="menu.index">
+						<el-submenu v-if="menu.smenus.length>0" :index="menu.index">
 							<template slot="title">{{menu.title}}</template>
 							<el-menu-item v-for="(sub, index) in menu.smenus" :key="index" :index="sub.index" @click="mclick(sub.index)">{{sub.title}}</el-menu-item>
 						</el-submenu>
-						<el-menu-item v-else="menu.issub" :index="menu.index" @click="mclick(menu.index)">
+						<el-menu-item v-else  :index="menu.index" @click="mclick(menu.index)">
 							{{menu.title}}
 						</el-menu-item>
 					</template>
@@ -64,7 +64,7 @@
 					<el-table-column prop='account' label='账号' width='160'>
 					</el-table-column>
 
-					<el-table-column prop='roles' label='角色' width='140'>
+					<el-table-column prop='role_name' label='角色' width='140'>
 					</el-table-column>
 					
 					<!--<el-table-column prop='pwd' label='密码' width='140'>
@@ -85,8 +85,7 @@
 				</el-table>
 
 				<!-- Eidt Dialog -->
-
-				<el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible" label-width='60px'>
+				<el-dialog v-loading="ed_loading" :title="dialogTitle" :visible.sync="dialogFormVisible" label-width='60px'>
 					<el-form :model="opuser">
 						<el-form-item label="账号" :label-width="formLabelWidth">
 							<el-input v-model="opuser.account" auto-complete="off" :disabled="filedDisabled" placeholder="请输入账号"></el-input>
@@ -95,7 +94,7 @@
 							<el-input v-model="opuser.name" auto-complete="off" placeholder="请输入名字"></el-input>
 						</el-form-item>
 						<el-form-item label="选择角色" :label-width="formLabelWidth">
-							<el-select v-model="opuser.roles_id" multiple placeholder="请选择角色">
+							<el-select v-model="opuser.role_id" placeholder="请选择角色">
 								<el-option v-for="item in sys_roles" :key="item.value" :label="item.label" :value="item.value">
 								</el-option>
 							</el-select>
@@ -103,7 +102,7 @@
 					</el-form>
 					<div slot="footer" class="dialog-footer">
 						<el-button @click="dialogFormVisible = false">取 消</el-button>
-						<el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+						<el-button type="primary" @click="postadduser">确 定</el-button>
 					</div>
 				</el-dialog>
 
@@ -145,7 +144,7 @@
 				</el-header>
 				<el-container>
 					<el-aside width="200px">
-						<leftmenu :menudata="menudata" @mclick-event='menuclick'>
+						<leftmenu @mclick-event='menuclick'>
 						</leftmenu>
 					</el-aside>
 					<el-main>
@@ -161,42 +160,48 @@
 	<script src="https://unpkg.com/vue/dist/vue.js"></script>
 	<!-- import JavaScript -->
 	<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="https://cdn.bootcss.com/qs/6.8.0/qs.js"></script>
 
 	<script>
-		var menudata = {
-			menus: [{
-				index: '1',
-				issub: true,
-				title: '系统管理',
-				smenus: [{
-					index: '1-1',
-					title: '用户管理',
-					mpath: 'userman'
-				}, {
-					index: '1-2',
-					title: '角色管理',
-					mpath: 'roleman'
-				}, {
-					index: '1-3',
-					title: '权限管理',
-					mpath: 'permman'
-				}, {
-					index: '1-4',
-					title: '菜单管理',
-					mpath: 'menuman'
-				}]
-			}, {
-				index: '2',
-				issub: false,
-				title: '数据分析',
-				mpath: 'dataanly'
-			}]
-		}
+<!--		-->
+//		var menudata = {
+//			menus: [{
+//				index: '1',
+//				issub: true,
+//				title: '系统管理',
+//				smenus: [{
+//					index: '1-1',
+//					title: '用户管理',
+//					mpath: 'userman'
+//				}, {
+//					index: '1-2',
+//					title: '角色管理',
+//					mpath: 'roleman'
+//				}, {
+//					index: '1-3',
+//					title: '权限管理',
+//					mpath: 'permman'
+//				}, {
+//					index: '1-4',
+//					title: '菜单管理',
+//					mpath: 'menuman'
+//				}]
+//			}, {
+//				index: '2',
+//				issub: false,
+//				title: '数据分析',
+//				mpath: 'dataanly',
+//				smenus:[]
+//			}]
+//		}
+//
+//		var userdata = {
+//
+//		}
 
-		var userdata = {
-
-		}
 	</script>
+
 
 	<script src="js/main.js"></script>
 

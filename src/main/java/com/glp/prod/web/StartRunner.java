@@ -70,7 +70,41 @@ public class StartRunner  implements CommandLineRunner {
         Menu menu2 = new Menu();
         menu2.setLevel("1-1");
         menu2.setTitle("用户管理");
+        menu2.setTarget("userman");
         menu2.setPermission(role.getPermissions().get(0));
+
+        Permission p1=role.getPermissions().get(0);
+        menuDao.save(menu2);
+
+        menu2.setId(null);
+        menu2.setLevel("1-2");
+        menu2.setTitle("角色管理");
+        menu2.setTarget("roleman");
+        menu2.setPermission(p1);
+
+        menuDao.save(menu2);
+
+        menu2.setId(null);
+        menu2.setLevel("1-3");
+        menu2.setTitle("权限管理");
+        menu2.setTarget("permman");
+        menu2.setPermission(p1);
+
+        menuDao.save(menu2);
+
+        menu2.setId(null);
+        menu2.setLevel("1-4");
+        menu2.setTitle("菜单管理");
+        menu2.setTarget("menuman");
+        menu2.setPermission(p1);
+
+        menuDao.save(menu2);
+
+        menu2.setId(null);
+        menu2.setLevel("2");
+        menu2.setTitle("数据分析-1");
+        menu2.setTarget("dataanly");
+        menu2.setPermission(p1);
 
         menuDao.save(menu2);
 

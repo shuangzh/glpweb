@@ -2,6 +2,7 @@ package com.glp.prod.web.entity;
 
 import com.glp.prod.web.entity.Role;
 import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -22,11 +23,13 @@ public class User {
     @Column(length = 64)
     private String name;
 
+    @ColumnDefault("0")
     private Boolean disabled = false;
 
     @Column(length = 128)
     private String pwd;
 
+    @ColumnDefault("0")
     private Boolean removed;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
