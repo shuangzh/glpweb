@@ -69,7 +69,80 @@ Vue.component('welcome', {
 })
 
 Vue.component('userman', {
-	template: '#userMan'
+	template: '#userMan',
+	data: function() {
+		return {
+			usertabledata: [{
+					id: 100,
+					name: '周双',
+					account: 'zhou ddf',
+					roles: '管理员',
+					roles_id:[1],
+					status: "启用",
+					pwd: '101010101010',
+					disabled: false
+				},
+				{
+					id: 101,
+					name: '周双1',
+					account: 'zhoushuang',
+					roles: '质检员',
+					roles_id:[2],
+					status: "禁用",
+					pwd: '10101011111',
+					disabled: true
+				}
+			],
+			
+			// 编辑用户
+			dialogTitle:'编辑用户',
+			filedDisabled:true,
+			dialogAction:'edit',
+			dialogFormVisible: false,
+			formLabelWidth:'80px',
+			opuser: {
+				account:'zhou',
+				name:'zhoushuang',
+				roles_id:[1, 2]
+			},
+			sys_roles:[{value:1, label:'admin'}, {value:2, label:'tester'}, {value:3, label:'oper'}],
+			
+			// reset密码
+			visi_reset:false
+			
+		}
+	},
+	methods: {
+		handleClick(row) {
+			console.log(row);
+			console.log(row.account)
+			row.disabled = !row.disabled;
+			if(row.disabled) {
+				row.status = '禁用';
+			} else {
+				row.status = '启用'
+			}
+		},
+		editClick(row){
+			console.log(row);
+			this.dialogFormVisible=true;
+			this.filedDisabled=true;
+			this.dialogTitle='编辑用户信息';
+			this.dialogAction='edit';
+			this.opuser = row;
+		},
+		addClick(){
+			this.dialogFormVisible=true;
+			this.filedDisabled=false;
+			this.dialogTitle='添加新用户';
+			this.dialogAction='add';
+			this.opuser = {account:'', name:'', roles_id:[]}
+		},
+		resetClick(row){
+			this.visi_reset=true;
+			this.opuser=row;
+		}
+	}
 })
 
 Vue.component('roleman', {

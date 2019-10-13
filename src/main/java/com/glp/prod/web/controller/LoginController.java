@@ -24,6 +24,8 @@ public class LoginController {
     @Autowired
     HttpServletRequest request;
 
+
+
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String getLoginPage(){
         log.info(request.getRequestURI() + " PUT");
@@ -72,4 +74,6 @@ public class LoginController {
     public String page1(){
         return  "page1";
     }
+
+
 }
