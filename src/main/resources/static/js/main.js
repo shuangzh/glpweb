@@ -192,11 +192,21 @@ Vue.component('userman', {
             console.log(row);
             console.log(row.account)
             row.disabled = !row.disabled;
-            if (row.disabled) {
-                row.status = '禁用';
-            } else {
-                row.status = '启用'
-            }
+            var that = this
+            axios.post("/useradmin/toggledisabled", Qs.stringify({user_id: row.id}), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+                .then(function (resp) {
+                    console.log(resp)
+                    if (row.disabled) {
+                        row.status = '禁用';
+                    } else {
+                        row.status = '启用'
+                    }
+
+                    that.$message(row.account + "已" + row.status)
+
+                }).catch(function (err) {
+                console.log(err)
+            })
         },
         editClick(row) {
             console.log(row);
@@ -224,12 +234,12 @@ Vue.component('userman', {
                 .then(function (resp) {
                     that.ed_loading = false
                     that.dialogFormVisible = false;
-                    if(resp.data.code == 0){
-                    	that.$message({message: '添加用户成功', type: 'success'})
-					}else{
-                    	that.$message({message:'添加用户出现异常', type:'warning'})
-					}
-					that.loaddata();
+                    if (resp.data.code == 0) {
+                        that.$message({message: '添加用户成功', type: 'success'})
+                    } else {
+                        that.$message({message: '添加用户出现异常', type: 'warning'})
+                    }
+                    that.loaddata();
 
                 }).catch(function (err) {
                 console.log(err)
@@ -275,21 +285,134 @@ Vue.component('userman', {
                 that.$message.error("load usertablesdata failed")
                 that.usertabledata = that.usertabledata_example
             })
+        },
+        postedituser() {
+            this.ed_loading = true
+            var that = this
+            axios.post("/useradmin/edituser", Qs.stringify(that.opuser), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+                .then(function (resp) {
+                    that.ed_loading = false;
+                    that.dialogFormVisible = false;
+                    that.loaddata();
+                }).catch(function (err) {
+                that.ed_loading = false;
+                that.dialogFormVisible = false;
+            })
+        },
+        resetuser() {
+            var that = this
+            axios.post("/useradmin/resetuser", Qs.stringify(that.opuser), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+                .then(function (resp) {
+
+                }).catch(function (err) {
+
+            })
         }
     },
 
     created: function () {
-		this.loaddata();
+        this.loaddata();
     }
 
 })
 
 Vue.component('roleman', {
-    template: '#roleMan'
+    template: '#roleMan',
+    data: function () {
+        return {
+            roledata: [{
+                id: 1,
+                name: 'admin',
+                description: '管理员',
+                perms: 'user:admin',
+                perms_id: [1],
+                status: '正常',
+                disabled: false
+            },
+                {
+                    id: 2,
+                    name: 'tester',
+                    description: '测试人员',
+                    perms: 'test:data',
+                    perms_id: [5],
+                    status: '禁用',
+                    disabled: false
+                }],
+            sys_perms: [{value: 1, label: 'user:admin'}, {value: 2, label: 'test:data'}],
+
+            ed_loading: false,
+            dialogFormVisible: false,
+            filedDisabled: false,
+            dialogTitle: '',
+            dialogAction: 'add',
+            oprole: {},
+
+        }
+    },
+    methods: {
+        handleClick(row) {
+
+        },
+        editClick(row) {
+            this.oprole = row;
+            this.dialogFormVisible = true;
+            this.filedDisabled = false;
+            this.dialogAction = 'edit';
+            this.ed_loading = false;
+        },
+        addClick() {
+            this.dialogTitle = '添加新角色';
+            this.dialogAction = "add";
+            this.oprole = {id: 0, name: '', description: '', perms_id: []}
+            this.dialogFormVisible = true;
+        },
+        postaddrole() {
+
+        },
+        posteditrole() {
+
+        }
+
+    }
+
 })
 
 Vue.component('permman', {
-    template: '#permMan'
+    template: '#permMan',
+    data: function () {
+        return {
+            permdata: [{id: 1, perm: 'user:admin', description: 'sys用户管理', status: '正常', disabled: false},
+                {id: 2, perm: 'user:focus', description: "用户聚焦", status: '正常', disabled: false}],
+
+
+        }
+    },
+
+    methods: {
+
+        handleClick(row) {
+
+        },
+        editClick(row) {
+            this.oprole = row;
+            this.dialogFormVisible = true;
+            this.filedDisabled = false;
+            this.dialogAction = 'edit';
+            this.ed_loading = false;
+        },
+        addClick() {
+            this.dialogTitle = '添加新角色';
+            this.dialogAction = "add";
+            this.oprole = {id: 0, name: '', description: '', perms_id: []}
+            this.dialogFormVisible = true;
+        },
+        postaddperm() {
+
+        },
+        posteditperm() {
+
+        }
+    }
 })
 
 Vue.component('menuman', {
@@ -298,6 +421,98 @@ Vue.component('menuman', {
 
 Vue.component('dataanly', {
     template: '#dataAnly'
+})
+
+
+Vue.component('smodel', {
+    props:[upbuttons, tabledata , tablecolumn, opbuttons],
+    template: '#smodel',
+    data() {
+        return {
+            // upbuttons: [
+            //     {
+            //         icon: 'el-icon-plus',
+            //         label: '添加用户',
+            //         type: 'dialog',
+            //         dial: {
+            //             form: [{label: '用户名', prop: 'name'}, {label: 'id', prop: 'id'},
+            //                 {label: 'id', prop: 'hehe', type: 'select', options: [{label: 'pp', value: 1}]}],
+            //             title: '添加新用户', before: function () {
+            //                 console.log("this is before")
+            //             }, exec: function () {
+            //                 console.log("this is exec")
+            //             }
+            //         }
+            //     },
+            //     {
+            //         icon: 'el-icon-plus', label: '默认', type: 'dialog', dial: {
+            //             form: [{label: '用户名', prop: 'name'}, {label: 'id', prop: 'id'}],
+            //             title: '添用户'
+            //         }
+            //     }],
+            //
+            // tabledata: [{id: 1, name: 'zhoushuang', pwd: 'hello'},
+            //     {id: 2, name: 'zhoushuang', pwd: 'hello'}],
+            // tablecolumn: [{prop: 'name', label: '姓名'}, {prop: 'pwd', label: '密码'}],
+            //
+            // opbuttons: [{
+            //     label: '禁用', type: 'confirm', msg: "确认禁用", exec: function () {
+            //         console.log("confirm  msagggg")
+            //     }
+            // }, {label: '启用', type: 'confirm'}],
+
+            dialogForm: [{label: '用户名', prop: 'name'}, {label: 'id', prop: 'id'}],
+            opdata: {},
+            dialogFormVisible: false,
+            ed_loading: false,
+            dialogTitle: 'haha',
+            dailogBtn: ""
+        }
+    },
+    methods:
+        {
+            UpClick(bt) {
+                if (bt.type == 'dialog') {
+                    this.dialogForm = bt.dial.form;
+                    this.dialogTitle = bt.dial.title;
+                    this.dailogBtn = bt;
+                    this.opdata = {}
+                    this.ed_loading = false;
+                    this.dialogFormVisible = true;
+                    if (bt.dial.before) {
+                        bt.dial.before(bt.dial)
+                    }
+                }
+            },
+            OpClick(bt, row) {
+                this.opdata = row;
+                var smod = this
+                if (bt.type == "confirm") {
+                    if (confirm(bt.msg)) {
+                        if (bt.exec) {
+                            bt.exec(smod, this.opdata)
+                        }
+                    }
+                } else if (bt.type == 'dialog') {
+                    this.dialogForm = bt.dial.form;
+                    this.dialogTitle = bt.dial.title;
+                    this.dailogBtn = bt;
+                    this.ed_loading = false;
+                    this.dialogFormVisible = true;
+                    if (bt.dial.before) {
+                        bt.dial.before(bt.dial)
+                    }
+                }
+            },
+            dialConfirm() {
+                var smod = this;
+                if (this.dailogBtn.dial.exec) {
+                    this.dailogBtn.dial.exec(smod, this.opdata)
+                } else {
+                    this.dialogFormVisible = false;
+                }
+            }
+        }
 })
 
 const instance = new Vue({
