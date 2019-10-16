@@ -1,6 +1,8 @@
 package com.glp.prod.web;
 
 import com.glp.prod.web.dao.MenuDao;
+import com.glp.prod.web.dao.PermissionDao;
+import com.glp.prod.web.dao.RoleDao;
 import com.glp.prod.web.dao.UserDao;
 import com.glp.prod.web.entity.Menu;
 import com.glp.prod.web.entity.Permission;
@@ -20,6 +22,12 @@ public class StartRunner  implements CommandLineRunner {
 
     @Autowired
     MenuDao menuDao;
+
+    @Autowired
+    RoleDao roleDao;
+
+    @Autowired
+    PermissionDao permissionDao;
 
     @Override
     public void run(String... args) throws Exception {
@@ -44,11 +52,26 @@ public class StartRunner  implements CommandLineRunner {
 
         Permission permission = new Permission();
         permission.setDescription("用户管理");
-        permission.setPerm("user:admin:*");
+        permission.setPerm("user:admin");
         permission.setDisabled(false);
         permission.setRemoved(false);
 
+
+        permissionDao.save(permission);
+
+        Permission permission2 = new Permission();
+        permission2.setDescription("测试管理");
+        permission2.setPerm("test:admin");
+        permission2.setDisabled(false);
+        permission2.setRemoved(false);
+
+
+        permissionDao.save(permission2);
+
         role.addPermission(permission);
+
+        roleDao.save(role);
+
         user.setRole(role);
 
         userDao.saveAndFlush(user);
@@ -56,14 +79,13 @@ public class StartRunner  implements CommandLineRunner {
         log.info("user = {}", user );
 
 //        user.setRole(null);
-//
 //        userDao.saveAndFlush(user);
 
 
         Menu menu = new Menu();
         menu.setLevel("1");
         menu.setTitle("系统管理");
-        menu.setPermission(role.getPermissions().get(0));
+        menu.setPermission(permission);
 
         menuDao.save(menu);
 
@@ -71,16 +93,15 @@ public class StartRunner  implements CommandLineRunner {
         menu2.setLevel("1-1");
         menu2.setTitle("用户管理");
         menu2.setTarget("userman");
-        menu2.setPermission(role.getPermissions().get(0));
+        menu2.setPermission(permission);
 
-        Permission p1=role.getPermissions().get(0);
         menuDao.save(menu2);
 
         menu2.setId(null);
         menu2.setLevel("1-2");
         menu2.setTitle("角色管理");
         menu2.setTarget("roleman");
-        menu2.setPermission(p1);
+        menu2.setPermission(permission);
 
         menuDao.save(menu2);
 
@@ -88,7 +109,7 @@ public class StartRunner  implements CommandLineRunner {
         menu2.setLevel("1-3");
         menu2.setTitle("权限管理");
         menu2.setTarget("permman");
-        menu2.setPermission(p1);
+        menu2.setPermission(permission);
 
         menuDao.save(menu2);
 
@@ -96,7 +117,7 @@ public class StartRunner  implements CommandLineRunner {
         menu2.setLevel("1-4");
         menu2.setTitle("菜单管理");
         menu2.setTarget("menuman");
-        menu2.setPermission(p1);
+        menu2.setPermission(permission);
 
         menuDao.save(menu2);
 
@@ -104,7 +125,7 @@ public class StartRunner  implements CommandLineRunner {
         menu2.setLevel("2");
         menu2.setTitle("数据分析-1");
         menu2.setTarget("dataanly");
-        menu2.setPermission(p1);
+        menu2.setPermission(permission);
 
         menuDao.save(menu2);
 

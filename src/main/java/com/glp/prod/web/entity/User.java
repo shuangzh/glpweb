@@ -30,9 +30,9 @@ public class User {
     private String pwd;
 
     @ColumnDefault("0")
-    private Boolean removed;
+    private Boolean removed=false;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="role_id")
     private Role role;
 

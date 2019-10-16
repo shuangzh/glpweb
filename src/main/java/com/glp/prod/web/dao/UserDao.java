@@ -18,13 +18,17 @@ public interface UserDao extends JpaRepository<User, Long> {
     int addNewUser(String account, String name,  Long role_id, String password);
 
     @Transactional
+    @Modifying
     @Query(value = "update sys_user set name = ?2 , role_id = ?3 where id = ?1", nativeQuery = true)
     int editUser(Long id, String name, Long role_id);
 
     @Transactional
+    @Modifying
     @Query(value="update sys_user set pwd=?2 where id= ?1", nativeQuery = true)
     int resetpwd(Long id, String pwd);
 
+    @Transactional
+    @Modifying
     @Query(value = "update sys_user set removed=1 where id =?1", nativeQuery = true)
     int deluser(Long id);
 

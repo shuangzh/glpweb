@@ -37,7 +37,8 @@ Vue.component("leftmenu", {
     methods: {
         mclick(index) {
             let menus = this.menudata.menus
-            let title = undefined, mpath = undefined
+            let title = undefined,
+                mpath = undefined
             menus.forEach((menu, it) => {
                 if (menu.index == index) {
                     if (menu.mpath) {
@@ -69,7 +70,9 @@ Vue.component("leftmenu", {
             var that = this
             axios.get('/useradmin/getmenu')
                 .then(function (response) {
-                    var data = response.data, mdata = new Array(), ct = null;
+                    var data = response.data,
+                        mdata = new Array(),
+                        ct = null;
                     for (var i = 0; i < data.length; i++) {
                         var it = data[i];
                         it.index = it.level;
@@ -83,7 +86,9 @@ Vue.component("leftmenu", {
                             ct.smenus.push(it)
                         }
                     }
-                    that.menudata = {menus: mdata}
+                    that.menudata = {
+                        menus: mdata
+                    }
                 }).catch(function (err) {
                 console.log(err)
                 that.menudata = that.menudata_example
@@ -149,123 +154,115 @@ Vue.component('welcome', {
 Vue.component('userman', {
     template: '#userMan',
     data: function () {
+        var that = this;
         return {
-            usertabledata: [],
-            usertabledata_example: [{
-                id: 100,
-                name: '周双',
-                account: 'zhou ddf',
-                role_name: '管理员',
-                role_id: 1,
-                status: "启用",
-                disabled: false
+            tabledata: [],
+            tablecolumn: [{
+                prop: 'account',
+                label: '账号'
             }, {
-                id: 101,
-                name: '周双1',
-                account: 'zhoushuang',
-                role_name: '质检员',
-                role_id: 2,
-                status: "禁用",
-                disabled: true
-            }
-            ],
-
-            // 编辑用户
-            dialogTitle: '编辑用户',
-            filedDisabled: true,
-            dialogAction: 'edit',
-            dialogFormVisible: false,
-            formLabelWidth: '80px',
-            opuser: {
-                account: 'zhou',
-                name: 'zhoushuang',
-                role_id: 1
+                prop: 'name',
+                label: '名字'
+            }, {
+                prop: 'role_name',
+                label: '角色'
+            }, {
+                prop: 'status',
+                label: '状态'
+            }],
+            upbuttons: [{
+                label: '添加新用户',
+                type: 'dialog',
+                icon: 'el-icon-plus',
+                dial: {
+                    title: '添加新用户',
+                    form: [{
+                        label: '账号',
+                        prop: 'account'
+                    }, {
+                        label: '名字',
+                        prop: 'name'
+                    },
+                        {
+                            label: '角色',
+                            prop: 'role_id',
+                            type: 'select',
+                            options: [{
+                                label: 'admin',
+                                value: 1
+                            }, {
+                                label: 'tester',
+                                value: 2
+                            }]
+                        }
+                    ],
+                    exec: that.postadduser
+                }
+            },],
+            opbuttons: [{
+                label: '切换',
+                type: 'confirm',
+                msg: '确认切换状态',
+                exec: that.handle
             },
-            sys_roles: [{value: 1, label: 'admin'}, {value: 2, label: 'tester'}, {value: 3, label: 'oper'}],
-            // reset密码
-            visi_reset: false,
-            ed_loading: false
+                {
+                    label: '编辑',
+                    type: 'dialog',
+                    dial: {
+                        title: '编辑账户',
+                        form: [{
+                            label: '账号',
+                            prop: 'account'
+                        }, {
+                            label: '名字',
+                            prop: 'name'
+                        },
+                            {
+                                label: '角色',
+                                prop: 'role_id',
+                                type: 'select',
+                                options: []
+                            }
+                        ],
+                        exec: that.postedituser
+                    }
+                },
+                {
+                    label: '删除',
+                    type: 'confirm',
+                    msg: '确认删除',
+                    exec: that.postdeluser
+                },
+                {
+                    label: '重置',
+                    type: 'confirm',
+                    msg: '确认重置密码',
+                    exec: that.postresetuser
+                }
+            ],
         }
     },
     methods: {
-        handleClick(row) {
-            console.log(row);
-            console.log(row.account)
-            row.disabled = !row.disabled;
-            var that = this
-            axios.post("/useradmin/toggledisabled", Qs.stringify({user_id: row.id}), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
-                .then(function (resp) {
-                    console.log(resp)
-                    if (row.disabled) {
-                        row.status = '禁用';
-                    } else {
-                        row.status = '启用'
-                    }
-
-                    that.$message(row.account + "已" + row.status)
-
-                }).catch(function (err) {
-                console.log(err)
-            })
-        },
-        editClick(row) {
-            console.log(row);
-            this.dialogFormVisible = true;
-            this.filedDisabled = true;
-            this.dialogTitle = '编辑用户信息';
-            this.dialogAction = 'edit';
-            this.opuser = row;
-        },
-        addClick() {
-            this.dialogFormVisible = true;
-            this.filedDisabled = false;
-            this.dialogTitle = '添加新用户';
-            this.dialogAction = 'add';
-            this.opuser = {account: '', name: '', role_id: ''}
-        },
-        resetClick(row) {
-            this.visi_reset = true;
-            this.opuser = row;
-        },
-        postadduser() {
-            this.ed_loading = true;
-            var that = this
-            axios.post("/useradmin/addnewuser", Qs.stringify(that.opuser), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
-                .then(function (resp) {
-                    that.ed_loading = false
-                    that.dialogFormVisible = false;
-                    if (resp.data.code == 0) {
-                        that.$message({message: '添加用户成功', type: 'success'})
-                    } else {
-                        that.$message({message: '添加用户出现异常', type: 'warning'})
-                    }
-                    that.loaddata();
-
-                }).catch(function (err) {
-                console.log(err)
-                that.ed_loading = false
-                that.dialogFormVisible = false;
-                that.$message.error("添加用户失败")
-            })
-        },
         loaddata() {
-            // load sys_roles
-            var that = this
-            axios.get("/useradmin/getroles")
-                .then(function (response) {
-                    var data = response.data;
-                    for (var i = 0; i < data.length; i++) {
-                        var it = data[i]
-                        it.value = it.id
-                        it.label = it.name
-                    }
-                    that.sys_roles = data
-                })
-                .catch(function (err) {
-                    console.log(err);
-                    that.$message.error("loading sys_roles failed")
-                })
-
+            let that = this
+            // this.tabledata = [{
+            //     id: 100,
+            //     name: '周双',
+            //     account: 'zhou ddf',
+            //     role_name: '管理员',
+            //     role_id: 1,
+            //     status: "启用",
+            //     disabled: false
+            // }, {
+            //     id: 101,
+            //     name: '周双1',
+            //     account: 'zhoushuang',
+            //     role_name: '质检员',
+            //     role_id: 2,
+            //     status: "禁用",
+            //     disabled: true
+            // }
+            // ]
             // load all users
             axios.get("/useradmin/getusers")
                 .then(function (response) {
@@ -279,111 +276,491 @@ Vue.component('userman', {
                         else
                             d1.status = "启用"
                     }
-                    that.usertabledata = d
+                    that.tabledata = d
                 }).catch(function (err) {
                 console.log(err);
                 that.$message.error("load usertablesdata failed")
-                that.usertabledata = that.usertabledata_example
             })
+
+            axios.get("/useradmin/getroles")
+                .then(function (response) {
+                    var data = response.data;
+                    for (var i = 0; i < data.length; i++) {
+                        var it = data[i]
+                        it.value = it.id
+                        it.label = it.name
+                    }
+                    that.upbuttons[0].dial.form[2].options = data
+                    that.opbuttons[1].dial.form[2].options = data
+                })
+                .catch(function (err) {
+                    console.log(err);
+                    that.$message.error("loading sys_roles failed")
+                })
         },
-        postedituser() {
-            this.ed_loading = true
-            var that = this
-            axios.post("/useradmin/edituser", Qs.stringify(that.opuser), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+
+        handle(smod, data) {
+            data.disabled = !data.disabled;
+            var that = this;
+            axios.post("/useradmin/toggledisabled", Qs.stringify({
+                user_id: data.id
+            }), {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
                 .then(function (resp) {
-                    that.ed_loading = false;
-                    that.dialogFormVisible = false;
+                    console.log(resp)
+                    if (data.disabled) {
+                        data.status = '禁用';
+                    } else {
+                        data.status = '启用'
+                    }
+                    that.$message(data.account + "已" + data.status)
+                }).catch(function (err) {
+                console.log(err)
+            })
+
+        },
+
+        postadduser(smod, data) {
+            smod.ed_loading = true;
+            let that = this;
+            axios.post("/useradmin/addnewuser", Qs.stringify(data), {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+                .then(function (resp) {
+                    smod.ed_loading = false
+                    smod.dialogFormVisible = false;
+                    if (resp.data.code == 0) {
+                        that.$message({
+                            message: '添加用户成功',
+                            type: 'success'
+                        })
+                    } else {
+                        that.$message({
+                            message: '添加用户出现异常',
+                            type: 'warning'
+                        })
+                    }
                     that.loaddata();
                 }).catch(function (err) {
-                that.ed_loading = false;
-                that.dialogFormVisible = false;
+                console.log(err)
+                smod.ed_loading = false
+                smod.dialogFormVisible = false;
+                that.$message.error("添加用户失败")
             })
         },
-        resetuser() {
-            var that = this
-            axios.post("/useradmin/resetuser", Qs.stringify(that.opuser), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+
+        postedituser(smod, data) {
+            smod.ed_loading = true;
+            var that = this;
+            axios.post("/useradmin/edituser", Qs.stringify(data), {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
                 .then(function (resp) {
-
+                    smod.ed_loading = false;
+                    smod.dialogFormVisible = false;
+                    that.loaddata();
+                    that.$message('已修改账户信息')
                 }).catch(function (err) {
+                smod.ed_loading = false;
+                smod.dialogFormVisible = false;
+                that.$message.error('修改账户信息失败')
+            })
+        },
 
+        postdeluser(smod, data) {
+            var that = this;
+            axios.post("/useradmin/deluser", Qs.stringify(data), {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+                .then(function (resp) {
+                    console.log(resp)
+                    that.$message(data.account + "已删除")
+                    that.loaddata();
+                }).catch(function (err) {
+                console.log(err)
+            })
+        },
+
+        postresetuser(smod, data) {
+            var that = this;
+            axios.post("/useradmin/resetuser", Qs.stringify(data), {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+                .then(function (resp) {
+                    console.log(resp)
+                    that.$message(data.account + "已重置密码")
+                }).catch(function (err) {
+                that.$message.error("重置密码失败")
+                console.log(err)
             })
         }
+
     },
-
-    created: function () {
-        this.loaddata();
+    created() {
+        this.loaddata()
     }
+});
 
-})
+// Vue.component('userman', {
+//     template: '#userMan',
+//     data: function () {
+//         return {
+//             usertabledata: [],
+//             usertabledata_example: [{
+//                 id: 100,
+//                 name: '周双',
+//                 account: 'zhou ddf',
+//                 role_name: '管理员',
+//                 role_id: 1,
+//                 status: "启用",
+//                 disabled: false
+//             }, {
+//                 id: 101,
+//                 name: '周双1',
+//                 account: 'zhoushuang',
+//                 role_name: '质检员',
+//                 role_id: 2,
+//                 status: "禁用",
+//                 disabled: true
+//             }
+//             ],
+//
+//             // 编辑用户
+//             dialogTitle: '编辑用户',
+//             filedDisabled: true,
+//             dialogAction: 'edit',
+//             dialogFormVisible: false,
+//             formLabelWidth: '80px',
+//             opuser: {
+//                 account: 'zhou',
+//                 name: 'zhoushuang',
+//                 role_id: 1
+//             },
+//             sys_roles: [{value: 1, label: 'admin'}, {value: 2, label: 'tester'}, {value: 3, label: 'oper'}],
+//             // reset密码
+//             visi_reset: false,
+//             ed_loading: false
+//         }
+//     },
+//     methods: {
+//         handleClick(row) {
+//             console.log(row);
+//             console.log(row.account)
+//             row.disabled = !row.disabled;
+//             var that = this
+//             axios.post("/useradmin/toggledisabled", Qs.stringify({user_id: row.id}), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+//                 .then(function (resp) {
+//                     console.log(resp)
+//                     if (row.disabled) {
+//                         row.status = '禁用';
+//                     } else {
+//                         row.status = '启用'
+//                     }
+//
+//                     that.$message(row.account + "已" + row.status)
+//
+//                 }).catch(function (err) {
+//                 console.log(err)
+//             })
+//         },
+//         editClick(row) {
+//             console.log(row);
+//             this.dialogFormVisible = true;
+//             this.filedDisabled = true;
+//             this.dialogTitle = '编辑用户信息';
+//             this.dialogAction = 'edit';
+//             this.opuser = row;
+//         },
+//         addClick() {
+//             this.dialogFormVisible = true;
+//             this.filedDisabled = false;
+//             this.dialogTitle = '添加新用户';
+//             this.dialogAction = 'add';
+//             this.opuser = {account: '', name: '', role_id: ''}
+//         },
+//         resetClick(row) {
+//             this.visi_reset = true;
+//             this.opuser = row;
+//         },
+//         postadduser() {
+//             this.ed_loading = true;
+//             var that = this
+//             axios.post("/useradmin/addnewuser", Qs.stringify(that.opuser), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+//                 .then(function (resp) {
+//                     that.ed_loading = false
+//                     that.dialogFormVisible = false;
+//                     if (resp.data.code == 0) {
+//                         that.$message({message: '添加用户成功', type: 'success'})
+//                     } else {
+//                         that.$message({message: '添加用户出现异常', type: 'warning'})
+//                     }
+//                     that.loaddata();
+//
+//                 }).catch(function (err) {
+//                 console.log(err)
+//                 that.ed_loading = false
+//                 that.dialogFormVisible = false;
+//                 that.$message.error("添加用户失败")
+//             })
+//         },
+//         loaddata() {
+//             // load sys_roles
+//             var that = this
+//             axios.get("/useradmin/getroles")
+//                 .then(function (response) {
+//                     var data = response.data;
+//                     for (var i = 0; i < data.length; i++) {
+//                         var it = data[i]
+//                         it.value = it.id
+//                         it.label = it.name
+//                     }
+//                     that.sys_roles = data
+//                 })
+//                 .catch(function (err) {
+//                     console.log(err);
+//                     that.$message.error("loading sys_roles failed")
+//                 })
+//
+//             // load all users
+//             axios.get("/useradmin/getusers")
+//                 .then(function (response) {
+//                     var d = response.data
+//                     for (var i = 0; i < d.length; i++) {
+//                         var d1 = d[i]
+//                         d1.role_name = d1.role.name
+//                         d1.role_id = d1.role.id
+//                         if (d1.disabled)
+//                             d1.status = "禁用"
+//                         else
+//                             d1.status = "启用"
+//                     }
+//                     that.usertabledata = d
+//                 }).catch(function (err) {
+//                 console.log(err);
+//                 that.$message.error("load usertablesdata failed")
+//                 that.usertabledata = that.usertabledata_example
+//             })
+//         },
+//         postedituser() {
+//             this.ed_loading = true
+//             var that = this
+//             axios.post("/useradmin/edituser", Qs.stringify(that.opuser), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+//                 .then(function (resp) {
+//                     that.ed_loading = false;
+//                     that.dialogFormVisible = false;
+//                     that.loaddata();
+//                 }).catch(function (err) {
+//                 that.ed_loading = false;
+//                 that.dialogFormVisible = false;
+//             })
+//         },
+//         resetuser() {
+//             var that = this
+//             axios.post("/useradmin/resetuser", Qs.stringify(that.opuser), {headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+//                 .then(function (resp) {
+//
+//                 }).catch(function (err) {
+//
+//             })
+//         }
+//     },
+//
+//     created: function () {
+//         this.loaddata();
+//     }
+//
+// })
+
 
 Vue.component('roleman', {
-    template: '#roleMan',
-    data: function () {
-        return {
-            roledata: [{
-                id: 1,
-                name: 'admin',
-                description: '管理员',
-                perms: 'user:admin',
-                perms_id: [1],
-                status: '正常',
-                disabled: false
-            },
-                {
-                    id: 2,
-                    name: 'tester',
-                    description: '测试人员',
-                    perms: 'test:data',
-                    perms_id: [5],
-                    status: '禁用',
-                    disabled: false
-                }],
-            sys_perms: [{value: 1, label: 'user:admin'}, {value: 2, label: 'test:data'}],
+	template: '#roleMan',
+	data:function () {
+		var that= this;
+		return {
+			tabledata:[],
+			tablecolumn:[{label:'角色', prop:'name'}, {label:'说明',prop:'description'},{label:'权限',prop:'perms'},{label:'状态',prop:'status'}],
+			upbuttons:[{label:'新角色',icon:'el-icon-plus', type:'dialog',
+						dial:{title:'添加新角色', form:[{label:'角色', prop:'name'}, {label:'说明', prop:'description'},
+								  {label:'权限', prop:'perms_id', type:'select', multi:true ,
+									  options:[{label:'user:admin', value:1}, {label: 'data:look', value: 2}]} ],
+							exec:that.postaddrole
+						}
 
-            ed_loading: false,
-            dialogFormVisible: false,
-            filedDisabled: false,
-            dialogTitle: '',
-            dialogAction: 'add',
-            oprole: {},
+									  }, ],
+			opbuttons:[],
+		}
+	},
+	methods:{
+		loaddata(){
+			let that = this;
+			axios.get('/useradmin/getroles').then(function (resp) {
+				let d = resp.data;
+				for(let i=0; i<d.length; i++){
+					let perms_id = new Array();
+					let perms = ""
+					for(let j=0; j<d[i].permissions.length; j++){
+						 perms = perms+" "+d[i].permissions[j].perm
+						 perms_id.push(d[i].permissions[j].id)
+					}
+					d[i].perms=perms.trim();
+					d[i].perms_id=perms_id;
+					if(d.disabled)
+						d[i].status = '禁用'
+					else{
+						d[i].status = '启用'
+					}
+				}
+				that.tabledata=d
+			}).catch(function (error) {
+				console.log(error)
+			});
 
-        }
-    },
-    methods: {
-        handleClick(row) {
+			axios.get('/useradmin/getperms').then(function (resp) {
+				let d = resp.data;
+				console.log(d)
+				for(let i=0; i<d.length; i++){
+					d[i].label = d[i].perm;
+					d[i].value = d[i].id;
+				}
+				that.upbuttons[0].dial.form[2].options=d;
+			}).catch(function (err) {
+				console.log(err)
+			})
+		},
 
-        },
-        editClick(row) {
-            this.oprole = row;
-            this.dialogFormVisible = true;
-            this.filedDisabled = false;
-            this.dialogAction = 'edit';
-            this.ed_loading = false;
-        },
-        addClick() {
-            this.dialogTitle = '添加新角色';
-            this.dialogAction = "add";
-            this.oprole = {id: 0, name: '', description: '', perms_id: []}
-            this.dialogFormVisible = true;
-        },
-        postaddrole() {
+		postaddrole(smod, data){
+			let that = this;
+			console.log("here is postaddrole")
+            smod.ed_loading = true
+            axios.post("/useradmin/addrole", Qs.stringify(data), {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }).then(function (resp) {
+                smod.ed_loading=false;
+                smod.dialogFormVisible=false;
+                that.loaddata();
+                that.$message({type:'success', message:'角色添加成功'})
+            }).catch(function (err) {
+                smod.ed_loading=false;
+                smod.dialogFormVisible=false;
+                that.$message.error("添加角色失败")
+            })
+		},
 
-        },
-        posteditrole() {
 
-        }
-
-    }
-
+	},
+	created(){
+		this.loaddata();
+	}
 })
+
+
+//
+// Vue.component('roleman', {
+//     template: '#roleMan',
+//     data: function () {
+//         return {
+//             roledata: [{
+//                 id: 1,
+//                 name: 'admin',
+//                 description: '管理员',
+//                 perms: 'user:admin',
+//                 perms_id: [1],
+//                 status: '正常',
+//                 disabled: false
+//             },
+//                 {
+//                     id: 2,
+//                     name: 'tester',
+//                     description: '测试人员',
+//                     perms: 'test:data',
+//                     perms_id: [5],
+//                     status: '禁用',
+//                     disabled: false
+//                 }
+//             ],
+//             sys_perms: [{
+//                 value: 1,
+//                 label: 'user:admin'
+//             }, {
+//                 value: 2,
+//                 label: 'test:data'
+//             }],
+//
+//             ed_loading: false,
+//             dialogFormVisible: false,
+//             filedDisabled: false,
+//             dialogTitle: '',
+//             dialogAction: 'add',
+//             oprole: {},
+//
+//         }
+//     },
+//     methods: {
+//         handleClick(row) {
+//
+//         },
+//         editClick(row) {
+//             this.oprole = row;
+//             this.dialogFormVisible = true;
+//             this.filedDisabled = false;
+//             this.dialogAction = 'edit';
+//             this.ed_loading = false;
+//         },
+//         addClick() {
+//             this.dialogTitle = '添加新角色';
+//             this.dialogAction = "add";
+//             this.oprole = {
+//                 id: 0,
+//                 name: '',
+//                 description: '',
+//                 perms_id: []
+//             }
+//             this.dialogFormVisible = true;
+//         },
+//         postaddrole() {
+//
+//         },
+//         posteditrole() {
+//
+//         }
+//
+//     }
+//
+// })
+
 
 Vue.component('permman', {
     template: '#permMan',
     data: function () {
         return {
-            permdata: [{id: 1, perm: 'user:admin', description: 'sys用户管理', status: '正常', disabled: false},
-                {id: 2, perm: 'user:focus', description: "用户聚焦", status: '正常', disabled: false}],
-
+            permdata: [{
+                id: 1,
+                perm: 'user:admin',
+                description: 'sys用户管理',
+                status: '正常',
+                disabled: false
+            },
+                {
+                    id: 2,
+                    perm: 'user:focus',
+                    description: "用户聚焦",
+                    status: '正常',
+                    disabled: false
+                }
+            ],
 
         }
     },
@@ -403,7 +780,12 @@ Vue.component('permman', {
         addClick() {
             this.dialogTitle = '添加新角色';
             this.dialogAction = "add";
-            this.oprole = {id: 0, name: '', description: '', perms_id: []}
+            this.oprole = {
+                id: 0,
+                name: '',
+                description: '',
+                perms_id: []
+            }
             this.dialogFormVisible = true;
         },
         postaddperm() {
@@ -423,9 +805,8 @@ Vue.component('dataanly', {
     template: '#dataAnly'
 })
 
-
 Vue.component('smodel', {
-    props:[upbuttons, tabledata , tablecolumn, opbuttons],
+    props: ['upbuttons', 'tabledata', 'tablecolumn', 'opbuttons'],
     template: '#smodel',
     data() {
         return {
@@ -461,7 +842,13 @@ Vue.component('smodel', {
             //     }
             // }, {label: '启用', type: 'confirm'}],
 
-            dialogForm: [{label: '用户名', prop: 'name'}, {label: 'id', prop: 'id'}],
+            dialogForm: [{
+                label: '用户名',
+                prop: 'name'
+            }, {
+                label: 'id',
+                prop: 'id'
+            }],
             opdata: {},
             dialogFormVisible: false,
             ed_loading: false,
@@ -469,50 +856,49 @@ Vue.component('smodel', {
             dailogBtn: ""
         }
     },
-    methods:
-        {
-            UpClick(bt) {
-                if (bt.type == 'dialog') {
-                    this.dialogForm = bt.dial.form;
-                    this.dialogTitle = bt.dial.title;
-                    this.dailogBtn = bt;
-                    this.opdata = {}
-                    this.ed_loading = false;
-                    this.dialogFormVisible = true;
-                    if (bt.dial.before) {
-                        bt.dial.before(bt.dial)
-                    }
-                }
-            },
-            OpClick(bt, row) {
-                this.opdata = row;
-                var smod = this
-                if (bt.type == "confirm") {
-                    if (confirm(bt.msg)) {
-                        if (bt.exec) {
-                            bt.exec(smod, this.opdata)
-                        }
-                    }
-                } else if (bt.type == 'dialog') {
-                    this.dialogForm = bt.dial.form;
-                    this.dialogTitle = bt.dial.title;
-                    this.dailogBtn = bt;
-                    this.ed_loading = false;
-                    this.dialogFormVisible = true;
-                    if (bt.dial.before) {
-                        bt.dial.before(bt.dial)
-                    }
-                }
-            },
-            dialConfirm() {
-                var smod = this;
-                if (this.dailogBtn.dial.exec) {
-                    this.dailogBtn.dial.exec(smod, this.opdata)
-                } else {
-                    this.dialogFormVisible = false;
+    methods: {
+        UpClick(bt) {
+            if (bt.type == 'dialog') {
+                this.dialogForm = bt.dial.form;
+                this.dialogTitle = bt.dial.title;
+                this.dailogBtn = bt;
+                this.opdata = {}
+                this.ed_loading = false;
+                this.dialogFormVisible = true;
+                if (bt.dial.before) {
+                    bt.dial.before(bt.dial)
                 }
             }
+        },
+        OpClick(bt, row) {
+            this.opdata = row;
+            var smod = this
+            if (bt.type == "confirm") {
+                if (confirm(bt.msg)) {
+                    if (bt.exec) {
+                        bt.exec(smod, this.opdata)
+                    }
+                }
+            } else if (bt.type == 'dialog') {
+                this.dialogForm = bt.dial.form;
+                this.dialogTitle = bt.dial.title;
+                this.dailogBtn = bt;
+                this.ed_loading = false;
+                this.dialogFormVisible = true;
+                if (bt.dial.before) {
+                    bt.dial.before(bt.dial)
+                }
+            }
+        },
+        dialConfirm() {
+            var smod = this;
+            if (this.dailogBtn.dial.exec) {
+                this.dailogBtn.dial.exec(smod, this.opdata)
+            } else {
+                this.dialogFormVisible = false;
+            }
         }
+    }
 })
 
 const instance = new Vue({
@@ -538,6 +924,5 @@ const instance = new Vue({
     created: function () {
     }
 })
-
 
 instance.$refs.maintabs.addtab('欢迎页面', 'welcome')

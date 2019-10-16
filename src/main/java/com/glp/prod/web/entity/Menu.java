@@ -23,6 +23,10 @@ public class Menu {
     @Column(length = 32)
     private String level;
 
+    private Boolean disabled= false;
+
+    private Boolean removed = false;
+
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="perm_id")
     private Permission permission;

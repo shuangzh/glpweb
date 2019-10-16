@@ -24,11 +24,11 @@ public class Role {
     @Column(length = 128)
     private String description;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "sys_role_perm", joinColumns = @JoinColumn(name="role_id"), inverseJoinColumns = @JoinColumn(name="perm_id"))
     private List<Permission> permissions = new ArrayList<>();
 
-    private Boolean removed;
+    private Boolean removed=false;
 
     public Role addPermission(Permission permission)
     {

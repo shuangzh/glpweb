@@ -21,6 +21,13 @@ public class Permission {
     @Column(length = 128)
     private String description;
 
-    private Boolean removed;
+    private Boolean removed=false;
 
+    public Permission(){
+
+    }
+
+    public Permission(Long id){
+        this.id=id;
+    }
 }
