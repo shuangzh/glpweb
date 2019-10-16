@@ -19,7 +19,8 @@ public class Role {
     @Column(length = 32)
     private String name;
 
-    private Boolean disabled = false;
+
+
 
     @Column(length = 128)
     private String description;
@@ -28,7 +29,8 @@ public class Role {
     @JoinTable(name = "sys_role_perm", joinColumns = @JoinColumn(name="role_id"), inverseJoinColumns = @JoinColumn(name="perm_id"))
     private List<Permission> permissions = new ArrayList<>();
 
-    private Boolean removed=false;
+    private Integer disabled = 0;
+    private Integer removed=0;
 
     public Role addPermission(Permission permission)
     {

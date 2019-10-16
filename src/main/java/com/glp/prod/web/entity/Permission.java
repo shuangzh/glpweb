@@ -16,12 +16,13 @@ public class Permission {
     @Column(length = 32)
     private String perm;
 
-    private Boolean disabled = false;
 
     @Column(length = 128)
     private String description;
 
-    private Boolean removed=false;
+
+    private Integer disabled = 0;
+    private Integer removed=0;
 
     public Permission(){
 

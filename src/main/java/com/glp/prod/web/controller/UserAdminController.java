@@ -37,6 +37,9 @@ public class UserAdminController {
     UserDao userDao;
 
     @Autowired
+    MenuDao menuDao;
+
+    @Autowired
     PermissionDao permissionDao;
 
     @Autowired
@@ -72,16 +75,16 @@ public class UserAdminController {
     @PostMapping("/useradmin/toggledisabled")
     Reply toggleUserDisabled(String user_id){
         User u = userDao.findById(Long.parseLong(user_id)).get();
-        u.setDisabled(!u.getDisabled());
+        u.setDisabled(u.getDisabled()==0?0:1);
         userDao.save(u);
         return Reply.success();
     }
 
     // 更新用户信息
     @PostMapping("/useradmin/edituser")
-    Reply editUser(String id, String account,String name, String role_id){
+    Reply editUser(String id, String account,String name, String role_id, String disabled){
         log.info("edit user {} name={}, role_id={}", account, name, role_id);
-        userDao.editUser(Long.parseLong(id), name, Long.parseLong(role_id));
+        userDao.editUser(Long.parseLong(id), name, Long.parseLong(role_id), Integer.parseInt(disabled));
         return Reply.success();
     }
 
@@ -136,7 +139,7 @@ public class UserAdminController {
         role.setName(rp.getName());
         role.setDescription(rp.getDescription());
         role.getPermissions().clear();
-        role.setDisabled(rp.getDisabled()=="true"? true:false);
+        role.setDisabled(Integer.parseInt(rp.getDisabled()));
         for(String i: rp.getPerms_id()){
             role.addPermission(new Permission(Long.parseLong(i)));
         }
@@ -144,15 +147,83 @@ public class UserAdminController {
         return  Reply.success();
     }
 
+    @PostMapping("/useradmin/delrole")
     Reply delRole(String id){
-
-        return  Reply.success();
+        roleDao.removedById(Long.parseLong(id));
+        return Reply.success();
     }
-
 
     @GetMapping("/useradmin/getperms")
     List<Permission> getPermission(){
-        return permissionDao.findAll().stream().filter( permission ->  !permission.getRemoved()).collect(Collectors.toList());
+        return permissionDao.findAll().stream().filter( permission ->  permission.getRemoved()==0).collect(Collectors.toList());
     };
+
+
+    @PostMapping("/useradmin/addperm")
+    Reply addPerm(String perm, String description){
+        Permission p = new Permission();
+        p.setPerm(perm);
+        p.setDescription(description);
+        p.setDisabled(0);
+        p.setRemoved(0);
+        permissionDao.save(p);
+        return Reply.success();
+    }
+
+    @PostMapping("/useradmin/editperm")
+    Reply editPerm(String id, String perm, String description, String disabled){
+        Permission p = permissionDao.getOne(Long.parseLong(id));
+        p.setPerm(perm);
+        p.setDisabled(Integer.parseInt(disabled));
+        p.setDescription(description);
+        permissionDao.save(p);
+        return Reply.success();
+    }
+
+    @PostMapping("/useradmin/delperm")
+    Reply editPerm(String id){
+        Permission p = permissionDao.getOne(Long.parseLong(id));
+        p.setRemoved(1);
+        permissionDao.save(p);
+        return Reply.success();
+    }
+    // ----------------------------------------------------------菜单管理 ------------------------------------
+    @GetMapping("/useradmin/getallmenu")
+    List<Menu> getAllMenus(){
+        return  menuDao.findAll().stream().filter( menu -> menu.getRemoved()==0).collect(Collectors.toList());
+    }
+
+    @PostMapping("/useradmin/addmenu")
+    Reply addmenu(String title, String target, String level, String description, String perm_id){
+        Menu menu = new Menu();
+        menu.setTarget(target);
+        menu.setTitle(title);
+        menu.setDescription(description);
+        menu.setLevel(level);
+        menu.setPermission(new Permission(Long.parseLong(perm_id)));
+        menuDao.save(menu);
+        return  Reply.success();
+    }
+
+    @PostMapping("/useradmin/editmenu")
+    Reply editMenu(String id, String title, String target, String level, String description, String perm_id, String disabled){
+        Menu menu = menuDao.getOne(Long.parseLong(id));
+        menu.setTitle(title);
+        menu.setTarget(target);
+        menu.setLevel(level);
+        menu.setDescription(description);
+        menu.setDisabled(Integer.parseInt(disabled));
+        menu.setPermission(new Permission(Long.parseLong(perm_id)));
+        menuDao.save(menu);
+        return Reply.success();
+    }
+
+    @PostMapping("/useradmin/delmenu")
+    Reply delMenu(String id){
+        menuDao.deleteById(Long.parseLong(id));
+        return Reply.success();
+    }
+
+
 
 }

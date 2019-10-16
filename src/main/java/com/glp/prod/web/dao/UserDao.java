@@ -19,8 +19,8 @@ public interface UserDao extends JpaRepository<User, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = "update sys_user set name = ?2 , role_id = ?3 where id = ?1", nativeQuery = true)
-    int editUser(Long id, String name, Long role_id);
+    @Query(value = "update sys_user set name = ?2 , role_id = ?3 , disabled=?4 where id = ?1", nativeQuery = true)
+    int editUser(Long id, String name, Long role_id, Integer disabled);
 
     @Transactional
     @Modifying

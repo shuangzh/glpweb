@@ -35,11 +35,11 @@ public class UserAdminService {
     }
 
     public List<Role> getAllRoles(){
-       return roleDao.findAll().stream().filter(role -> role.getRemoved()==false).collect(Collectors.toList());
+       return roleDao.findAll().stream().filter(role -> role.getRemoved()==0).collect(Collectors.toList());
     }
 
     public List<User> getAllUsers(){
-        return userDao.findAll().stream().filter( user -> user.getRemoved()==false).collect(Collectors.toList());
+        return userDao.findAll().stream().filter( user -> user.getRemoved()==0).collect(Collectors.toList());
     }
 
 

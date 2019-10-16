@@ -41,20 +41,20 @@ public class StartRunner  implements CommandLineRunner {
         user.setAccount("zhou");
         user.setPwd("fb88a4810c160559000a4518a6a4ec99");
         user.setName("zhou shuang");
-        user.setDisabled(false);
-        user.setRemoved(false);
+        user.setDisabled(0);
+        user.setRemoved(0);
 
         Role role = new Role();
         role.setName("admin");
         role.setDescription("管理员");
-        role.setDisabled(false);
-        role.setRemoved(false);
+        role.setDisabled(0);
+        role.setRemoved(0);
 
         Permission permission = new Permission();
         permission.setDescription("用户管理");
         permission.setPerm("user:admin");
-        permission.setDisabled(false);
-        permission.setRemoved(false);
+        permission.setDisabled(0);
+        permission.setRemoved(0);
 
 
         permissionDao.save(permission);
@@ -62,8 +62,8 @@ public class StartRunner  implements CommandLineRunner {
         Permission permission2 = new Permission();
         permission2.setDescription("测试管理");
         permission2.setPerm("test:admin");
-        permission2.setDisabled(false);
-        permission2.setRemoved(false);
+        permission2.setDisabled(0);
+        permission2.setRemoved(0);
 
 
         permissionDao.save(permission2);
@@ -86,6 +86,7 @@ public class StartRunner  implements CommandLineRunner {
         menu.setLevel("1");
         menu.setTitle("系统管理");
         menu.setPermission(permission);
+        menu.setDescription("系统管理菜单，1级");
 
         menuDao.save(menu);
 
@@ -94,6 +95,8 @@ public class StartRunner  implements CommandLineRunner {
         menu2.setTitle("用户管理");
         menu2.setTarget("userman");
         menu2.setPermission(permission);
+        menu2.setDescription("用户管理,1-1级");
+
 
         menuDao.save(menu2);
 
@@ -102,6 +105,7 @@ public class StartRunner  implements CommandLineRunner {
         menu2.setTitle("角色管理");
         menu2.setTarget("roleman");
         menu2.setPermission(permission);
+        menu2.setDescription("角色管理,1-2级");
 
         menuDao.save(menu2);
 
@@ -110,6 +114,8 @@ public class StartRunner  implements CommandLineRunner {
         menu2.setTitle("权限管理");
         menu2.setTarget("permman");
         menu2.setPermission(permission);
+        menu2.setDescription("权限管理,1-3级");
+
 
         menuDao.save(menu2);
 
@@ -118,7 +124,7 @@ public class StartRunner  implements CommandLineRunner {
         menu2.setTitle("菜单管理");
         menu2.setTarget("menuman");
         menu2.setPermission(permission);
-
+        menu2.setDescription("菜单管理,1-4级");
         menuDao.save(menu2);
 
         menu2.setId(null);
@@ -126,6 +132,7 @@ public class StartRunner  implements CommandLineRunner {
         menu2.setTitle("数据分析-1");
         menu2.setTarget("dataanly");
         menu2.setPermission(permission);
+        menu2.setDescription("数据分析, 2级");
 
         menuDao.save(menu2);
 

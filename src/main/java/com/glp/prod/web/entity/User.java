@@ -24,13 +24,13 @@ public class User {
     private String name;
 
     @ColumnDefault("0")
-    private Boolean disabled = false;
+    private Integer disabled =0;
 
     @Column(length = 128)
     private String pwd;
 
     @ColumnDefault("0")
-    private Boolean removed=false;
+    private Integer removed = 0;
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="role_id")
