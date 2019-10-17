@@ -7,10 +7,13 @@
 
     <!-- import element-ui CSS -->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<!--    <link rel="stylesheet" href="css/index.css">-->
 
     <!-- import less -->
     <link rel="stylesheet" type="text/less" href="css/styles.less"/>
     <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.10.0-beta/less.min.js"></script>
+<!--    <script src="js/less.min.js"></script>-->
+
 </head>
 
 <body>
@@ -51,11 +54,11 @@
 </template>
 
 <template id='userMan'>
-	<smodel :upbuttons="upbuttons" :tabledata="tabledata" :tablecolumn="tablecolumn" :opbuttons="opbuttons"></smodel>
+    <smodel :upbuttons="upbuttons" :tabledata="tabledata" :tablecolumn="tablecolumn" :opbuttons="opbuttons"></smodel>
 </template>
 
 <template id='roleMan'>
-	<smodel :upbuttons="upbuttons" :tabledata="tabledata" :tablecolumn="tablecolumn" :opbuttons="opbuttons"></smodel>
+    <smodel :upbuttons="upbuttons" :tabledata="tabledata" :tablecolumn="tablecolumn" :opbuttons="opbuttons"></smodel>
 </template>
 
 <template id='permMan'>
@@ -67,7 +70,7 @@
 </template>
 
 <template id='dataAnly'>
-    <he>数据分析</he>
+    <h1>数据分析</h1>
 </template>
 
 <template id="smodel">
@@ -113,13 +116,16 @@
 
 
 <div id="app">
-    <el-container>
-        <el-header>
+    <el-container class="allbox">
+        <el-header style="height:auto">
+            <div class="logo">
+                <img src="image/new-logo.png" />
+            </div>
             <div class="right-con">
                 <el-button icon="el-icon-s-tools" size=mini round @click="logout">Logout</el-button>
             </div>
-            <h1 style="color: white;">GreenLight Planet Production</h1>
         </el-header>
+
         <el-container>
             <el-aside width="200px">
                 <leftmenu @mclick-event='menuclick'>
@@ -129,9 +135,21 @@
                 <maintabs ref="maintabs"></maintabs>
             </el-main>
         </el-container>
+        <el-footer>
+            <div class="copy">
+                © 2017 Greenlight Planet. All Rights Reserved
+            </div>
+        </el-footer>
     </el-container>
 </div>
 </body>
+
+<!-- import Vue before Element -->
+<!--<script src="https://unpkg.com/vue/dist/vue.js"></script>-->
+<!-- import JavaScript -->
+<!--<script src="https://unpkg.com/element-ui/lib/index.js"></script>-->
+<!--<script src="https://unpkg.com/axios/dist/axios.min.js"></script>-->
+<!--<script src="https://cdn.bootcss.com/qs/6.8.0/qs.js"></script>-->
 
 <!-- import Vue before Element -->
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
@@ -144,6 +162,8 @@
 
 
 </script>
+
+
 <script src="js/main.js"></script>
 
 </html>

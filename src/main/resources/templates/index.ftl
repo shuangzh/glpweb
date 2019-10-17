@@ -11,6 +11,7 @@
     <!-- import less -->
     <link rel="stylesheet" type="text/less" href="css/styles.less"/>
     <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.10.0-beta/less.min.js"></script>
+
 </head>
 
 <body>
@@ -113,13 +114,16 @@
 
 
 <div id="app">
-    <el-container>
-        <el-header>
+    <el-container class="allbox">
+        <el-header style="height:auto">
+            <div class="logo">
+                <img src="image/new-logo.png" />
+            </div>
             <div class="right-con">
                 <el-button icon="el-icon-s-tools" size=mini round @click="logout">Logout</el-button>
             </div>
-            <h1 style="color: white;">GreenLight Planet Production</h1>
         </el-header>
+
         <el-container>
             <el-aside width="200px">
                 <leftmenu @mclick-event='menuclick'>
@@ -129,6 +133,11 @@
                 <maintabs ref="maintabs"></maintabs>
             </el-main>
         </el-container>
+        <el-footer>
+            <div class="copy">
+                © 2017 Greenlight Planet. All Rights Reserved
+            </div>
+        </el-footer>
     </el-container>
 </div>
 </body>

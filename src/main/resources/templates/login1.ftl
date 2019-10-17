@@ -1,66 +1,98 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html>
 <head>
-    <title>GreenLightPlanet Login</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta charset="utf-8">
+    <title>Green Light Planet</title>
 
-    <!-- vue.js && iview -->
-    <link rel="stylesheet" type="text/css" href="http://unpkg.com/iview/dist/styles/iview.css">
-    <script type="text/javascript" src="http://vuejs.org/js/vue.min.js"></script>
-    <script type="text/javascript" src="http://unpkg.com/iview/dist/iview.min.js"></script>
+    <!-- import element-ui CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
 
-
-    <style scoped>
-        .login-box{
-            padding: 50px 30px;
-            width: 350px;
-            margin: 0 auto;
-            margin-top: 100px;
-            border-radius: 5px;
-            -webkit-border-radius: 5px;
-            -moz-border-radius: 5px;
-            box-shadow: 0 0 25px #909399;
-        }
-
-
-    </style>
-
-
+    <!-- import less -->
+    <link rel="stylesheet" type="text/less" href="css/styles.less"/>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/3.10.0-beta/less.min.js"></script>
 
 </head>
 <body>
-<dvi id="app">
+<div id="app">
 
-    <div class="login-box">
-        <i-Form ref="LoginFrom">
-            <FormItem>
-                <Input v-model="email" type="text" prefix="ios-mail"  placeholder="enter email address"></Input>
-            </FormItem>
-            <FormItem>
-                <Input v-model="passwd" type="password" prefix="ios-lock" placeholder="your password"></Input>
-            </FormItem>
-            <FormItem>
-                <Button long type="primary" @click="handleSubmit('LoginFrom')">Submit</Button>
-            </FormItem>
-        </i-Form>
+    <div id="stick-header">
+        <div class="logo">
+            <img src="image/new-logo.png" />
+        </div>
     </div>
 
 
-</dvi>
+    <div class="login">
+        <div class="login-con">
 
-<script language="JavaScript">
-    var app = new Vue({
+            <div class="form-con">
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span>欢迎登录</span>
+                    </div>
+
+                    <el-form id="loginform" action="/login" ref="LoginForm">
+                        <el-form-item label="账号">
+                            <el-input
+                                    placeholder="请输入账号"
+                                    name="username">
+                                <i slot="prefix" class="el-input__icon el-icon-user"></i>
+                            </el-input>
+
+                        </el-form-item>
+
+                        <el-form-item label="密码">
+                            <el-input
+                                    placeholder="请输入账号"
+                                    name="password">
+                                <i slot="prefix" class="el-input__icon el-icon-key"></i>
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button native-type="submit" style="width:100%;background-color: #FFDB00">登录</el-button>
+                        </el-form-item>
+                    </el-form>
+                </el-card>
+            </div>
+
+        </div>
+    </div>
+
+    <!--
+    <i-button @click="show">Click me!</i-button>
+    <Modal v-model="visible" title="Welcome">Welcome to iView</Modal>
+    -->
+
+</div>
+
+</body>
+
+<!-- import Vue before Element -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.bootcss.com/qs/6.8.0/qs.js"></script>
+
+
+<script>
+    new Vue({
         el: '#app',
         data: {
-            message: 'Hello Vue!',
-            name:'zhoushuang',
-            passwd:'123456',
-            email:'email'
+            visible: false
+        },
+        methods: {
+            show: function () {
+                this.visible = true;
+            },
+            loginSubmit:function () {
+                var f=document.getElementById("loginform");
+                console.log("login form submit")
+                f.submit()
+            }
         }
     })
 </script>
 
-</body>
+
 </html>

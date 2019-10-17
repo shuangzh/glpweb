@@ -14,17 +14,35 @@ html,body{
   .size;
 }
 
+#stick-header{
+  background-color: #FFDB00;
+  float:left;
+  width: 100%;
+  z-index: 1000;
+  .logo{
+    padding: 11px 20px;
+    width: 197px;
+    float: left;
+    img{
+      max-width: 100%;
+      height: auto;
+    }
+
+  }
+}
+
 .login{
   width:100%;
   height: 100%;
   background-size: 100% 100%;
   background-position: center;
-  background-image: url('/image/login-bg.jpg');
+  background-color:#808285;
+  //background-image: url('/image/login-bg.jpg');
   &-con{
     position: absolute;
-    right: 160px;
+    right: 50%;
     top:50%;
-    transform: translateY(-60%);
+    transform: translate(150px, -60%);
     width: 300px;
 
     &-head{
@@ -45,12 +63,36 @@ html,body{
 }
 
 .el-header{
-    box-shadow:0px 1px 10px 0px;
-    background-color: #AEDD81;
+    background-color: #FFDB00;
     .right-con{
         float: right;
-        padding-top:20px ;    
+        padding-top:30px ;
     }
+    .logo {
+      padding: 11px 20px;
+      width: 197px;
+      float: left;
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+    }
+}
+
+.allbox{
+  .size;
+  .el-aside{
+    background-color: #808285;
+  }
+}
+
+
+
+.el-footer{
+  background-color: #272727;
+  text-align: center;
+  color:#808285 ;
+  padding-top: 20px;
 }
 
 
