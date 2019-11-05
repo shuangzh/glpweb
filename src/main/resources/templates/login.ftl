@@ -6,6 +6,7 @@
 
     <!-- import element-ui CSS -->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
 
     <!-- import less -->
     <link rel="stylesheet" type="text/less" href="css/styles.less"/>
@@ -31,8 +32,8 @@
                         <span>欢迎登录</span>
                     </div>
 
-                    <el-form id="loginform" action="/login" ref="LoginForm"  method="post"  :model="form">
-                        <el-form-item label="账号">
+                    <el-form id="loginform" action="/login" ref="LoginForm"   method="post" :model="form">
+                        <el-form-item>
                             <el-input
                                     placeholder="请输入账号"
                                     name="username" v-model="form.username">
@@ -41,7 +42,7 @@
 
                         </el-form-item>
 
-                        <el-form-item label="密码">
+                        <el-form-item>
                             <el-input
                                     placeholder="请输入密码"
                                     name="password"  v-model="form.password" show-password>

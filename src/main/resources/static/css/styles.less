@@ -27,29 +27,37 @@ html,body{
       max-width: 100%;
       height: auto;
     }
-
   }
 }
 
 .login{
   width:100%;
   height: 100%;
-  background-size: 100% 100%;
-  background-position: center;
+  min-width: 800px;
+  min-height: 600px;
+  background-size:contain;
+  background-position: center 70px;
   background-color:#808285;
-  //background-image: url('/image/login-bg.jpg');
+  background-repeat: no-repeat;
+  background-image: url('../image/back1.jpg');
   &-con{
     position: absolute;
-    right: 50%;
-    top:50%;
-    transform: translate(150px, -60%);
+    right: 24%;
+    top:45%;
+    transform: translate(150px, -50%);
     width: 300px;
+
+
 
     &-head{
       font-size:16px;
       font-weight:300;
       text-align: center;
       padding: 28px 0px;
+    }
+
+    .el-card:hover{
+      box-shadow:0 0px 6px #ffffff;
     }
 
     .form-con{
@@ -83,6 +91,7 @@ html,body{
   .size;
   .el-aside{
     background-color: #808285;
+    min-height: 500px;
   }
 }
 
